@@ -31,5 +31,3 @@ private:
 	static TextureCache* instance;
 	std::unordered_map<std::string, std::shared_ptr<sf::Texture>> mTextureCache;
 };
-
-TextureCache* TextureCache::instance = nullptr;
