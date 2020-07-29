@@ -9,26 +9,66 @@
 #include <SFML/Graphics.hpp>
 
 #include "TextureCache.h"
+#include <functional>
 
 class State;
 
-class GameObject
+class Entity
 {
 public:
-	explicit GameObject(State* boundState)
-	{
-		mBoundState = boundState;
-	}
-	virtual void draw() = 0;
-	virtual void update(float dt) = 0;
-	void setPosition(const sf::Vector2i& position)
-	{
-		mPosition = position;
-	}
+	Entity(const std::string& filename, float scale, float rotation, const sf::Vector2f& position);
+	void onClick();
+	void addHandler(std::function<void()> handler);
+	void addUpdateFunction(std::function<void(float dt)> handler);
+	void update(float dt);
+	void draw(sf::RenderTarget& target);
 private:
-	sf::Vector2i mPosition;
-	State* mBoundState;
+	std::vector<std::function<void()>> mClickHandlers;
+	std::vector <std::function<void(float)>> mUpdateFunctions;
+	sf::Sprite mSprite;
+	std::shared_ptr<sf::Texture> mBoundTexture;
 };
+
+void Entity::draw(sf::RenderTarget& target)
+{
+	target.draw(mSprite);
+}
+
+void Entity::addUpdateFunction(std::function<void(float dt)> handler)
+{
+	mUpdateFunctions.push_back(handler);
+}
+
+void Entity::update(float dt)
+{
+	for (auto& updateFunction : mUpdateFunctions)
+	{
+		updateFunction(dt);
+	}
+}
+
+void Entity::addHandler(std::function<void()> handler)
+{
+	mClickHandlers.push_back(handler);
+}
+
+Entity::Entity(const std::string& filename, float scale, float rotation, const sf::Vector2f& position)
+{
+	mBoundTexture = TextureCache::get()->getTexture(filename);
+	mSprite = sf::Sprite(*mBoundTexture);
+	mSprite.setOrigin(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds.height / 2);
+	mSprite.setScale(sf::Vector2f(scale, scale));
+	mSprite.setRotation(rotation);
+	mSprite.setPosition(position);
+}
+
+void Entity::onClick()
+{
+	for (auto& handler : mClickHandlers)
+	{
+		handler();
+	}
+}
 
 class State
 {
@@ -42,52 +82,11 @@ public:
 	virtual void update(float dt) = 0;
 	virtual void draw() = 0;
 	virtual void handleEvent(sf::Event& event) = 0;
-private:
+protected:
 	bool mIsTranscendent = false;
 	bool mIsTransparent = false;
-	std::vector<std::unique_ptr<GameObject>> mBoundObjects;
+	std::vector<Entity> mEntities;
 };
-
-class Clickable : public GameObject
-{
-public:
-	Clickable(State* boundState);
-	virtual void handleClick(const sf::Vector2i& position) = 0;
-protected:
-	sf::FloatRect mBoundingRectangle;
-};
-
-class Arrow : public Clickable
-{
-public:
-	enum Facing
-	{
-		left = 0,
-		right = 1
-	};
-	Arrow(State* boundState, float x, float y, Facing facing);
-	void handleClick(const sf::Vector2i& position) override;
-private:
-	sf::Sprite mArrowSprite;
-	std::shared_ptr<sf::Texture> mBoundTexture;
-};
-
-Arrow::Arrow(State* boundState, float x, float y, Facing facing)
-	:Clickable(boundState)
-{
-	mBoundTexture = TextureCache::get()->getTexture("arrow.png");
-	mArrowSprite = sf::Sprite(*mBoundTexture.get());
-	mBoundingRectangle = mArrowSprite.getGlobalBounds();
-	mBoundingRectangle.left = x;
-	mBoundingRectangle.top = y;
-	mArrowSprite.setPosition(x, y);
-}
-
-Clickable::Clickable(State* boundState)
-	:GameObject(boundState)
-{
-
-}
 
 class MainMenuState : public State
 {
@@ -103,14 +102,31 @@ private:
 
 MainMenuState::MainMenuState()
 {
+	mEntities.push_back(Entity("arrow.png", 1, 0, sf::Vector2f(0, 0)));
+	mEntities.back().addHandler(
+		[this]() -> void {
+			++playerCount;
+		}
+	);
+	mEntities.push_back(Entity("arrow.png", 1, 180, sf::Vector2f(200, 0)));
+	mEntities.back().addHandler(
+		[this]() -> void {
+			playerCount = std::max(0, --playerCount);
+		}
+	);
 
 }
+
+struct Context
+{
+public:
+	sf::RenderWindow* mWindow;
+};
 
 class StateManager
 {
 public:
-	StateManager();
-	static StateManager* get();
+	explicit StateManager(const Context& context);
 	void pushState(State::StateType type);
 	void popState();
 
@@ -122,8 +138,13 @@ private:
 	std::deque<std::unique_ptr<State>> mStateStack;
 
 	std::unordered_map<State::StateType, std::function<std::unique_ptr<State>()>> mStateFactory;
-	static StateManager* mInstance;
+	Context mContext;
 };
+
+StateManager::StateManager(const Context& context)
+{
+	mContext = context;
+}
 
 void StateManager::handleEvent(sf::Event& event)
 {
@@ -136,17 +157,6 @@ void StateManager::handleEvent(sf::Event& event)
 		}
 	}
 }
-
-StateManager* StateManager::get()
-{
-	if (mInstance == nullptr)
-	{
-		mInstance = new StateManager();
-	}
-	return mInstance;
-}
-
-StateManager* StateManager::mInstance = nullptr;
 
 template <typename T> void StateManager::registerState(State::StateType type)
 {
