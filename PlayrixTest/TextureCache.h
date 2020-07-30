@@ -3,14 +3,14 @@
 #include <unordered_map>
 #include <memory>
 
-class TextureCache
+class ResourceCache
 {
 public:
-	static TextureCache* get()
+	static ResourceCache* get()
 	{
 		if (instance == nullptr)
 		{
-			instance = new TextureCache();
+			instance = new ResourceCache();
 		}
 		return instance;
 	}
@@ -27,7 +27,21 @@ public:
 		}
 		return mTextureCache[filename];
 	}
+	std::shared_ptr<sf::Font> getFont(const std::string& filename)
+	{
+		if (mFontCache.find(filename) == mFontCache.end())
+		{
+			sf::Font* font = new sf::Font();
+			if (!font->loadFromFile(filename))
+			{
+				throw std::runtime_error("failed to load " + filename);
+			}
+			mFontCache.emplace(filename, std::shared_ptr<sf::Font>(font));
+		}
+		return mFontCache[filename];
+	}
 private:
-	static TextureCache* instance;
+	static ResourceCache* instance;
 	std::unordered_map<std::string, std::shared_ptr<sf::Texture>> mTextureCache;
+	std::unordered_map<std::string, std::shared_ptr<sf::Font>> mFontCache;
 };

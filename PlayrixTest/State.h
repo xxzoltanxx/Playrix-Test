@@ -30,7 +30,7 @@ public:
 protected:
 	bool mIsTranscendent = false;
 	bool mIsTransparent = false;
-	std::vector<Entity> mEntities;
+	std::vector<Entity*> mEntities;
 
 	StateManager* mManager = nullptr;
 };
