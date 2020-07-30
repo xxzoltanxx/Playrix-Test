@@ -92,6 +92,8 @@ MainMenuState::MainMenuState(StateManager* manager)
 	mEntities.push_back(new Sprite("btn.png", 0.2f, 0, sf::Vector2f(320, 400)));
 	mEntities.back()->addHandler(
 		[this]() -> void {
+			mManager->mContext->numberOfCards = numberOfCards;
+			mManager->mContext->numberOfPlayers = playerCount;
 			mManager->mContext->mWindow->close();
 		}
 	);

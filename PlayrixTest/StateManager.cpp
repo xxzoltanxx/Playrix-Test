@@ -5,6 +5,7 @@ StateManager::StateManager(Context* context)
 {
 	mContext = context;
 	registerState<MainMenuState>(State::StateType::MainMenu);
+	registerState<GameState>(State::StateType::Game);
 }
 
 void StateManager::handleEvent(sf::Event& event)

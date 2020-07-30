@@ -5,6 +5,8 @@ struct Context
 {
 public:
 	sf::RenderWindow* mWindow;
+	int numberOfPlayers = 0;
+	int numberOfCards = 0;
 };
 
 class StateManager

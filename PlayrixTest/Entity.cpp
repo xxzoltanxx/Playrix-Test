@@ -72,3 +72,53 @@ void Text::setText(const std::string& text)
 	mText.setString(text);
 	mText.setOrigin(mText.getLocalBounds().width / 2, mText.getLocalBounds().height / 2);
 }
+
+void GameCard::draw(sf::RenderTarget& target)
+{
+	switch (revealStatus)
+	{
+	case NotRevealed:
+		target.draw(mBackSprite);
+		break;
+	case Revealed:
+		target.draw(mFaceSprite);
+		break;
+	case InProgressOpening:
+		target.draw(mBackSprite);
+		break;
+	case InProgressClosing:
+		target.draw(mFaceSprite);
+		break;
+	}
+}
+
+GameCard::GameCard(const sf::Vector2f& position, int id)
+{
+	mBackTexture = ResourceCache::get()->getTexture(BACK_CARD_FILENAME);
+	mFaceTexture = ResourceCache::get()->getTexture(std::to_string(id) + ".png");
+	this->id = id;
+	mBackSprite = sf::Sprite(*mBackTexture);
+	mBackSprite.setOrigin(mBackSprite.getLocalBounds().width / 2, mBackSprite.getLocalBounds().height / 2);
+	mBackSprite.setPosition(position);
+
+	mFaceSprite = sf::Sprite(*mFaceTexture);
+	mFaceSprite.setOrigin(mFaceSprite.getLocalBounds().width / 2, mFaceSprite.getLocalBounds().height / 2);
+	mFaceSprite.setPosition(position);
+}
+
+sf::FloatRect GameCard::getBoundingBox()
+{
+	return mFaceSprite.getGlobalBounds();
+}
+
+void GameCard::setScale(float scalex, float scaley)
+{
+	mFaceSprite.setScale(sf::Vector2f(scalex, scaley));
+	mBackSprite.setScale(sf::Vector2f(scalex, scaley));
+}
+
+void GameCard::setPosition(const sf::Vector2f& newPos)
+{
+	mFaceSprite.setPosition(newPos);
+	mBackSprite.setPosition(newPos);
+}

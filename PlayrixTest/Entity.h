@@ -6,6 +6,8 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+#define BACK_CARD_FILENAME "back.png"
+
 class Entity
 {
 public:
@@ -44,3 +46,32 @@ private:
 	sf::Text mText;
 	std::shared_ptr<sf::Font> mBoundFont;
 };
+
+class GameCard : public Entity
+{
+public:
+	enum RevealStatus
+	{
+		NotRevealed,
+		InProgressOpening,
+		InProgressClosing,
+		Revealed
+	};
+	GameCard(const sf::Vector2f& position, int id);
+	void draw(sf::RenderTarget& target) override;
+	sf::FloatRect getBoundingBox() override;
+	void setRevealed(RevealStatus status) { revealStatus = status; }
+	void setScale(float scalex, float scaley);
+	void setPosition(const sf::Vector2f& newPos);
+	int getId() const { return id; }
+	RevealStatus getStatus() const { return revealStatus; }
+private:
+	sf::Sprite mFaceSprite;
+	sf::Sprite mBackSprite;
+	std::shared_ptr<sf::Texture> mFaceTexture;
+	std::shared_ptr<sf::Texture> mBackTexture;
+
+	unsigned int id = 0;
+	RevealStatus revealStatus;
+};
+
