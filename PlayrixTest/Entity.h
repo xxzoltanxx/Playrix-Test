@@ -39,6 +39,10 @@ class Text : public Entity
 public:
 	Text(const std::string& fontFilename, float scale, float rotation, const sf::Vector2f& position, const std::string& text);
 	void draw(sf::RenderTarget& target) override;
+	void moveUp(float howMuch)
+	{
+		mText.move(sf::Vector2f(howMuch, 0));
+	}
 	sf::FloatRect getBoundingBox() override;
 
 	void setText(const std::string& text);
@@ -50,28 +54,36 @@ private:
 class GameCard : public Entity
 {
 public:
-	enum RevealStatus
-	{
-		NotRevealed,
-		InProgressOpening,
-		InProgressClosing,
-		Revealed
-	};
 	GameCard(const sf::Vector2f& position, int id);
 	void draw(sf::RenderTarget& target) override;
 	sf::FloatRect getBoundingBox() override;
-	void setRevealed(RevealStatus status) { revealStatus = status; }
+	void setRevealed(bool reveal) { mRevealed = reveal; }
+	bool getRevealed() const { return mRevealed; }
 	void setScale(float scalex, float scaley);
+	sf::Vector2f getScale() const;
 	void setPosition(const sf::Vector2f& newPos);
 	int getId() const { return id; }
-	RevealStatus getStatus() const { return revealStatus; }
+	void setShouldReveal(bool shouldReveal) { mShouldReveal = shouldReveal; }
+	bool getShouldReveal() const{ return mShouldReveal;  }
+	void setOpacity(float opacity);
+	float getOpacity() const { return floatOpacity; }
+	void setShouldHide(bool value);
+	bool getShouldHide() const { return mShouldHide; }
+	void lockIt() { mLocked = true; }
+	bool getIsLocked() const { return mLocked; }
+
 private:
+	float floatOpacity = 255.0f;
 	sf::Sprite mFaceSprite;
 	sf::Sprite mBackSprite;
 	std::shared_ptr<sf::Texture> mFaceTexture;
 	std::shared_ptr<sf::Texture> mBackTexture;
 
 	unsigned int id = 0;
-	RevealStatus revealStatus;
+	bool mRevealed = false;
+	bool mShouldReveal = false;
+	bool mShouldHide = false;
+
+	bool mLocked = false;
 };
 

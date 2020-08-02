@@ -1,5 +1,6 @@
 #include "StateManager.h"
 #include "State.h"
+#include "GameState.h"
 
 StateManager::StateManager(Context* context)
 {
@@ -28,6 +29,12 @@ template <typename T> void StateManager::registerState(State::StateType type)
 void StateManager::pushState(State::StateType type)
 {
 	mStateStack.push_front(std::move(mStateFactory[type]()));
+	mContext->mWindow->setView(mStateStack.front()->mView);
+}
+
+void StateManager::prepareState(State::StateType type)
+{
+	toPush = type;
 }
 
 void StateManager::popState()

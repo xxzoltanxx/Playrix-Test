@@ -75,21 +75,8 @@ void Text::setText(const std::string& text)
 
 void GameCard::draw(sf::RenderTarget& target)
 {
-	switch (revealStatus)
-	{
-	case NotRevealed:
-		target.draw(mBackSprite);
-		break;
-	case Revealed:
-		target.draw(mFaceSprite);
-		break;
-	case InProgressOpening:
-		target.draw(mBackSprite);
-		break;
-	case InProgressClosing:
-		target.draw(mFaceSprite);
-		break;
-	}
+	target.draw(mFaceSprite);
+	target.draw(mBackSprite);
 }
 
 GameCard::GameCard(const sf::Vector2f& position, int id)
@@ -98,11 +85,9 @@ GameCard::GameCard(const sf::Vector2f& position, int id)
 	mFaceTexture = ResourceCache::get()->getTexture(std::to_string(id) + ".png");
 	this->id = id;
 	mBackSprite = sf::Sprite(*mBackTexture);
-	mBackSprite.setOrigin(mBackSprite.getLocalBounds().width / 2, mBackSprite.getLocalBounds().height / 2);
 	mBackSprite.setPosition(position);
 
 	mFaceSprite = sf::Sprite(*mFaceTexture);
-	mFaceSprite.setOrigin(mFaceSprite.getLocalBounds().width / 2, mFaceSprite.getLocalBounds().height / 2);
 	mFaceSprite.setPosition(position);
 }
 
@@ -122,3 +107,21 @@ void GameCard::setPosition(const sf::Vector2f& newPos)
 	mFaceSprite.setPosition(newPos);
 	mBackSprite.setPosition(newPos);
 }
+
+sf::Vector2f GameCard::getScale() const
+{
+	return mFaceSprite.getScale();
+}
+
+void GameCard::setOpacity(float opacity)
+{
+	floatOpacity = opacity;
+	mFaceSprite.setColor(sf::Color(255, 255, 255, 255 - floatOpacity));
+	mBackSprite.setColor(sf::Color(255, 255, 255, floatOpacity));
+}
+
+void GameCard::setShouldHide(bool value)
+{
+	mShouldHide = value;
+}
+

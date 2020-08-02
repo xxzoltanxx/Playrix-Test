@@ -19,20 +19,39 @@ class State
 public:
 	friend class StateManager;
 	State(StateManager* manager);
+	virtual ~State()
+	{
+		for (Entity* entity : mEntities)
+		{
+			delete entity;
+		}
+	}
 	enum StateType
 	{
+		None = 3,
 		MainMenu = 0,
 		Game = 1
 	};
-	void update(float dt);
-	void draw(sf::RenderTarget& target);
-	void handleEvent(sf::Event& event);
+	enum MovingCamera
+	{
+		Nowhere = 0,
+		Left = 1,
+		Right = 2,
+		Up = 4,
+		Down = 8
+	};
+	virtual void update(float dt);
+	virtual void draw(sf::RenderTarget& target);
+	virtual void handleEvent(sf::Event& event);
 protected:
 	bool mIsTranscendent = false;
 	bool mIsTransparent = false;
+	bool mLockedHandling = false;
 	std::vector<Entity*> mEntities;
 
 	StateManager* mManager = nullptr;
+	sf::View mView = sf::View(sf::FloatRect(0, 0, 640, 480));
+	int movingCamera;
 };
 
 class MainMenuState : public State
@@ -40,50 +59,6 @@ class MainMenuState : public State
 public:
 	MainMenuState(StateManager* manager);
 private:
-	int playerCount = 0;
+	int playerCount = 1;
 	int numberOfCards = 2;
 };
-
-class GameState : public State
-{
-public:
-	GameState(StateManager* manager);
-private:
-	void createPair(int face);
-
-	int currentPlayer = 0;
-	int playerCount = 0;
-	int numberOfCards = 0;
-	std::unordered_map<int, int> mScoreSheet;
-	std::vector<sf::Vector2f> mPositions;
-};
-
-void GameState::createPair(int face)
-{
-	GameCard* first = new GameCard(sf::Vector2f(0, 0), face);
-	GameCard* second = new GameCard(sf::Vector2f(0, 0), face);
-	first->setScale(3000 / (640.0f / numberOfCards), 4200 / (480.0f / numberOfCards));
-	second->setScale(3000 / (640.0f / numberOfCards), 4200 / (480.0f / numberOfCards));
-}
-
-GameState::GameState(StateManager* manager)
-	:State(manager)
-{
-	std::srand(time(nullptr));
-	currentPlayer = 0;
-	playerCount = mManager->mContext->numberOfPlayers;
-	numberOfCards = mManager->mContext->numberOfCards;
-
-
-
-	for (int i = 0; i < playerCount; ++i)
-	{
-		mScoreSheet.emplace(i, 0);
-	}
-
-	for (int i = 0; i < numberOfCards / 2; ++i)
-	{
-		int randomFace = rand() % 54 + 1;
-
-	}
-}

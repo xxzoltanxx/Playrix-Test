@@ -24,11 +24,18 @@ void Game::run()
 		{
 			mManager->handleEvent(polledEvent);
 		}
+		if (mManager->toPush != State::StateType::None)
+		{
+			mManager->popState();
+			mManager->pushState(mManager->toPush);
+			mManager->toPush = State::StateType::None;
+		}
 		while (timeElapsed > frameTime)
 		{
 			mManager->update(frameTime.asSeconds());
 			timeElapsed -= frameTime;
 		}
+
 		mWindow->clear(sf::Color(0, 0, 0, 255));
 	}
 }

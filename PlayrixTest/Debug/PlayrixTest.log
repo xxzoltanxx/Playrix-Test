@@ -1,20 +1,2 @@
-﻿  State.cpp
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:  'argument': conversion from 'T' to 'T', possible loss of data
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:         with
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:         [
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:             T=int
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:         ]
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:         and
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:         [
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:             T=float
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,75): warning C4244:         ]
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:  'argument': conversion from 'T' to 'T', possible loss of data
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:         with
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:         [
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:             T=int
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:         ]
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:         and
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:         [
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:             T=float
-C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\PlayrixTest\State.cpp(26,63): warning C4244:         ]
+﻿  StateManager.cpp
   PlayrixTest.vcxproj -> C:\Users\Antonio\source\repos\PlayrixTest\Playrix-Test\Debug\PlayrixTest.exe

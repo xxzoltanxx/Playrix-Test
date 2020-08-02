@@ -14,6 +14,7 @@ class StateManager
 public:
 	explicit StateManager(Context* context);
 	void pushState(State::StateType type);
+	void prepareState(State::StateType type);
 	void popState();
 
 	void update(float dt);
@@ -21,6 +22,7 @@ public:
 	void handleEvent(sf::Event& event);
 
 	Context* mContext;
+	State::StateType toPush = State::StateType::None;
 private:
 	template <typename T> void registerState(State::StateType type);
 	std::deque<std::unique_ptr<State>> mStateStack;
